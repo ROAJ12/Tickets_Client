@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import Modal from 'react-modal';
 import axios from 'axios';
 
 import { API_URL } from '../../utils/constants';
@@ -15,6 +16,8 @@ const AdminAllTickets = () => {
     const [error, setError] = useState('');
     const [uniqueIdsArray , setUniqueIdsArray] = useState([]);
     const [searchStatus, setSearchStatus] = useState('');
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [modalImage, setModalImage] = useState('');
 
     const fetchAllTickets = async () => {
         try {
@@ -93,6 +96,16 @@ const AdminAllTickets = () => {
         ? tickets.filter(ticket => ticket.status === searchStatus)
         : tickets;
 
+    const openModal = (image) => {
+        setModalImage(image);
+        setModalIsOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false);
+        setModalImage('');
+    };    
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -125,6 +138,7 @@ const AdminAllTickets = () => {
                         <th>Status</th> 
                         <th>Creation Date</th>
                         <th>Last Update</th>
+                        <th>Details</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -137,7 +151,12 @@ const AdminAllTickets = () => {
                             <td>{usersData[ticket.creator].email}</td>
                             <td> 
                                 {ticket.image && (
-                                    <img src={`data:image;base64,${ticket.image}`} alt="Uploaded" style={{ width: '100px', height: '100px' }} />
+                                    <img
+                                    src={`data:image;base64,${ticket.image}`}
+                                    alt="Uploaded"
+                                    style={{ width: '100px', height: '100px', cursor: 'pointer' }}
+                                    onClick={() => openModal(`data:image;base64,${ticket.image}`)}
+                                />
                                 )}
                             </td>
                             <td>
@@ -152,10 +171,23 @@ const AdminAllTickets = () => {
                             </td>
                             <td>{new Date(ticket.createdAt).toLocaleString()}</td>
                             <td>{new Date(ticket.updatedAt).toLocaleString()}</td>
+                            <td>
+                                <Link to={`/ticketsdetails/${ticket._id}`}>View Details</Link>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel="Image Modal"
+            >
+                <button onClick={closeModal}>Close</button>
+                <img src={modalImage} alt="Full size" style={{ width: '100%', height: 'auto' }} />
+            </Modal>
+
         </div>
 
     );

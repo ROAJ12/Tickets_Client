@@ -5,7 +5,7 @@ import SideBard from '../../components/SideBar/SideBar';
 
 const ProfilePage = () => {
     return (
-        <div style={{ display: 'flex', height: '100vh' }}>
+        <div style={{ display: 'flex'}}>
             <SideBard />
             <div>
             <h1>Profile Page</h1>

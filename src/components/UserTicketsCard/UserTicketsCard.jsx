@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import getUserTickets from '../../api/getUserTickets';
 import { jwtDecode } from 'jwt-decode';
 
@@ -52,9 +52,9 @@ const UserTicketsCard = () => {
                     <th>Description</th>
                     <th>Status</th>
                     <th>Image</th>
-                    <th>Messages</th>
                     <th>Creation Date</th>
                     <th>Update Date</th>
+                    <th>Details</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -65,12 +65,14 @@ const UserTicketsCard = () => {
                         <td>Status: {ticket.status}</td>
                         <td> 
                         {ticket.image && (
-                            <img src={`data:image;base64,${ticket.image}`} alt="Uploaded" style={{ widtd: '100px', height: '100px' }} />
+                            <img src={`data:image;base64,${ticket.image}`} alt="Uploaded" style={{ width: '100px', height: '100px' }} />
                        )}
                         </td>
-                        <td>{ticket.messages.length}<hr></hr><button>See Messages</button></td>
                         <td>{new Date(ticket.createdAt).toLocaleString()}</td>
                         <td>{new Date(ticket.updatedAt).toLocaleString()}</td>
+                        <td>
+                            <Link to={`/ticketsdetails/${ticket._id}`}>View Details</Link>
+                        </td>
                     </tr>   
                 ))}
                 </tbody>

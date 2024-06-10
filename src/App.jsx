@@ -8,6 +8,7 @@ import DashBoard from './pages/DashBoard/DashBoard';
 import UserTicket from './pages/UserTickes/UserTicket';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import ErrorPage from './pages/ErrorPage/ErrorPage';
+import TicketDetails from './components/TicketDetails/TicketDetails';
 
 const App = () => {
 
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/tickets/:id" element={<UserTicket />} />
           <Route path="/profile/:id" element={<ProfilePage />} />
           <Route path="/error" element={<ErrorPage />} />
+          <Route path="/ticketsdetails/:id" element={<TicketDetails />} />
         </Routes>
       </Router>
     );
