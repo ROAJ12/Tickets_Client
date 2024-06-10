@@ -10,26 +10,28 @@ const UserTicketsCard = () => {
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+
+    const fetchUserTicketsData = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate('/error');
+            }
+            const payload = jwtDecode(token);
+            const userId = payload._id;
+            const userTickets = await getUserTickets(userId);
+            setTickets(userTickets);
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+            setError(error.message);
+        }
+    };
     
     useEffect(() => {
-        const fetchUserTicketsData = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    navigate('/error');
-                }
-                const payload = jwtDecode(token);
-                const userId = payload._id;
-                const userTickets = await getUserTickets(userId);
-                setTickets(userTickets);
-                setLoading(false);
-            } catch (error) {
-                setLoading(false);
-                setError(error.message);
-            }
-        };
 
         fetchUserTicketsData();
+
     }, []);
 
     if (loading) {
@@ -51,20 +53,24 @@ const UserTicketsCard = () => {
                     <th>Status</th>
                     <th>Image</th>
                     <th>Messages</th>
+                    <th>Creation Date</th>
+                    <th>Update Date</th>
                 </tr>
                 </thead>
                 <tbody>
                 {tickets.map(ticket => (
                     <tr key={ticket._id}>
-                        <th>{ticket.title}</th>
-                        <th>{ticket.description}</th>
-                        <th>Status: {ticket.status}</th>
-                        <th> 
+                        <td>{ticket.title}</td>
+                        <td>{ticket.description}</td>
+                        <td>Status: {ticket.status}</td>
+                        <td> 
                         {ticket.image && (
-                            <img src={`data:image;base64,${ticket.image}`} alt="Uploaded" style={{ width: '100px', height: '100px' }} />
+                            <img src={`data:image;base64,${ticket.image}`} alt="Uploaded" style={{ widtd: '100px', height: '100px' }} />
                        )}
-                        </th>
-                        <th>{ticket.messages.length}<hr></hr><button>See Messages</button></th>
+                        </td>
+                        <td>{ticket.messages.length}<hr></hr><button>See Messages</button></td>
+                        <td>{new Date(ticket.createdAt).toLocaleString()}</td>
+                        <td>{new Date(ticket.updatedAt).toLocaleString()}</td>
                     </tr>   
                 ))}
                 </tbody>
