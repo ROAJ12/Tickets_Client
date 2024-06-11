@@ -92,6 +92,27 @@ const AdminAllTickets = () => {
         }
     };
 
+    const handlePriorityChange = async (ticketId, newPriority) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.patch(`${API_URL}/tickets/${ticketId}`, { priority: newPriority }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            setTickets(tickets.map(ticket => 
+                ticket._id === ticketId ? { ...ticket, priority: newPriority } : ticket
+            )); 
+
+            fetchAllTickets();
+
+        } catch (error) {
+            console.error('Failed to update ticket priority', error);
+            setError('Failed to update ticket priority');
+        }    
+    };
+
     const filteredTickets = searchStatus 
         ? tickets.filter(ticket => ticket.status === searchStatus)
         : tickets;
@@ -135,6 +156,7 @@ const AdminAllTickets = () => {
                         <th>Creator ID</th>
                         <th>Creator Name</th>
                         <th>Image</th>
+                        <th>Priority</th>
                         <th>Status</th> 
                         <th>Creation Date</th>
                         <th>Last Update</th>
@@ -158,6 +180,16 @@ const AdminAllTickets = () => {
                                     onClick={() => openModal(`data:image;base64,${ticket.image}`)}
                                 />
                                 )}
+                            </td>
+                            <td>
+                                <select
+                                    value={ticket.priority}
+                                    onChange={(e) => handlePriorityChange(ticket._id, e.target.value)}
+                                >
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                </select>
                             </td>
                             <td>
                                 <select
